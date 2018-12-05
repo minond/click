@@ -1,63 +1,56 @@
 #!/bin/bash
 
 #=== FUNCTION =================================================================
-#         NAME: arg_or_read
-#  DESCRIPTION: Return given argument iff set, reads from stdin otherwise.
-#  PARAMETER 1: Optional argument value.
+#         NAME: open_url
+#  DESCRIPTION: If a URL is found in the argument, open it and exit this program.
+#  PARAMETER 1: Any string
+#         TODO: Add a way for a user to prioritise URLs.
 #==============================================================================
-arg_or_read() {
-  if [ ! -z "${1:-}" ]; then
-    echo "${1:-}"
-  else
-    read arg
-    echo "$arg"
+open_url() {
+  local text="${1:-}"
+  local match='(http|https)://[a-zA-Z0-9./?=_-]*'
+  local url=$(echo "$text" | grep -Eo "$match")
+
+  if [ ! -z "$url" ]; then
+    open "$url"
+    exit
   fi
 }
 
 #=== FUNCTION =================================================================
-#         NAME: env_eval
-#  DESCRIPTION: Evaluates a bash expression in a similar environment as the
-#               user's and crashes on first error.
-#  PARAMETER *: Command and arguments
+#         NAME: read_all_and_find_url
+#  DESCRIPTION: Reads piped input and calls open_url on every line.
+#        STDIN: Any string
 #==============================================================================
-env_eval() {
+read_all() {
+  while read line
+  do
+    open_url "$line"
+  done
+}
+
+if [ ! -z "${1:-}" ]; then
+  # Execute given arguments as a command. Before doing so, try loading the
+  # user's aliases so they can use them as arguments to this command.
   if [ -f ~/.bash_aliases ]; then
     shopt -s expand_aliases
     source ~/.bash_aliases
   fi
 
+  # Evaluate everything from here in strict settings. This is to prevent bad
+  # arguments from going forward.
   set -euo pipefail
-  out=$(eval $@ | tee /dev/tty)
-  set +euo pipefail
-  echo "$out"
-}
-
-#=== FUNCTION =================================================================
-#         NAME: match_url
-#  DESCRIPTION: Given any text or string, this will match and return a URL.
-#  PARAMETER 1: String
-#==============================================================================
-match_url() {
-  local text=$(arg_or_read "${1:-}")
-  local match='(http|https)://[a-zA-Z0-9./?=_-]*'
-  local url=$(echo "$text" | grep -Eo "$match")
-  echo "$url"
-}
-
-#=== FUNCTION =================================================================
-#         NAME: open_it
-#  DESCRIPTION: Calls system's open command with a safeguard around the input.
-#  PARAMETER 1: URI string
-#==============================================================================
-open_it() {
-  local url=$(arg_or_read "${1:-}")
-  if [ ! -z "$url" ]; then
-    open "$url"
-  fi
-}
-
-if [ ! -z "${1:-}" ]; then
-  env_eval $@ | match_url | open_it
+  eval $@ | tee /dev/tty | read_all
 elif [ ! -t 0 ]; then
-  cat | match_url | open_it
+  # Input is coming in from standard input. Easy.
+  read_all
+elif [ ! -z "${TMUX:-}" ]; then
+  # Capture last N lines from the current tmux pane and read the lines in
+  # reverse order since we prefer newer output over older one.
+  file=$(mktemp)
+  tmux capture-pane -pS -1000 > "$file"
+  tail -r "$file" | read_all
+  rm "$file"
+else
+  echo I need some sort of input or for you to run me in tmux!
 fi
