@@ -1,0 +1,13 @@
+The command `click` clicks on URLs for you.
+
+You can use it to find and open URLs in a number of ways, such as by passing it
+a command which is executed and checked, piping for when you want `click` to
+check stdin, and, iff you're in a tmux session, simply running `click` in order
+to click on the last printed URL in your terminal.
+
+
+Here are some examples:
+
+    $ click git push origin master      # click on the first URL printed by git push
+    $ cat my-very-own-file.txt | click  # click on the first URL in the file
+    $ click                             # click on the last URL printed on your terminal
