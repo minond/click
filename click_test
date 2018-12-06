@@ -4,7 +4,7 @@ case "$1" in
   --stdout)
     echo 1 2 3
     echo 1 2 3
-    echo "https://google.com"
+    echo "https://gitlab.hellyeah.com/mx/proj/merge_requests/new?utf8=%E2%9C%93&merge_request%5Bsource_project_id%5D=961&merge_request%5Bsource_branch%5D=go-update-it%2F5TfybkSHcMiWESFt4oYoQx2Okct5F0Fv&merge_request%5Btarget_project_id%5D=961&merge_request%5Btarget_branch%5D=master"
     echo 1 2 3
     echo 1 2 3
     ;;
@@ -12,7 +12,7 @@ case "$1" in
   --stderr)
     echo 1 2 3
     echo 1 2 3
-    (>&2 echo "https://google.com")
+    (>&2 echo "https://gitlab.hellyeah.com/mx/proj/merge_requests/new?utf8=%E2%9C%93&merge_request%5Bsource_project_id%5D=961&merge_request%5Bsource_branch%5D=go-update-it%2F5TfybkSHcMiWESFt4oYoQx2Okct5F0Fv&merge_request%5Btarget_project_id%5D=961&merge_request%5Btarget_branch%5D=master")
     echo 1 2 3
     echo 1 2 3
     ;;
