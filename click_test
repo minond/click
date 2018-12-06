@@ -1,0 +1,30 @@
+#!/bin/bash
+
+case "$1" in
+  --stdout)
+    echo 1 2 3
+    echo 1 2 3
+    echo "https://google.com"
+    echo 1 2 3
+    echo 1 2 3
+    ;;
+
+  --stderr)
+    echo 1 2 3
+    echo 1 2 3
+    (>&2 echo "https://google.com")
+    echo 1 2 3
+    echo 1 2 3
+    ;;
+
+  *)
+    echo running tests...
+    set -euo pipefail
+    export PATH="$(pwd):$PATH"
+    click_test --stdout | click &> /dev/null
+    click_test --stderr 2>&1 | click &> /dev/null
+    click click_test --stdout &> /dev/null
+    click click_test --stderr &> /dev/null
+    echo done
+    ;;
+esac

@@ -8,7 +8,7 @@
 #==============================================================================
 open_url() {
   local text="${1:-}"
-  local match='(http|https)://[a-zA-Z0-9./?=_-]*'
+  local match='(http|https)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]'
   local url=$(echo "$text" | grep -Eo "$match")
 
   if [ ! -z "$url" ]; then
@@ -40,7 +40,7 @@ if [ ! -z "${1:-}" ]; then
   # Evaluate everything from here in strict settings. This is to prevent bad
   # arguments from going forward.
   set -euo pipefail
-  eval $@ | tee /dev/tty | read_all
+  eval $@ 2>&1 | tee /dev/tty | read_all
 elif [ ! -t 0 ]; then
   # Input is coming in from standard input. Easy.
   read_all

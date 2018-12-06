@@ -11,3 +11,9 @@ Here are some examples:
     $ click git push origin master      # click on the first URL printed by git push
     $ cat my-very-own-file.txt | click  # click on the first URL in the file
     $ click                             # click on the last URL printed on your terminal
+
+
+Testimonials:
+
+    "haha crafty" - Evan
+    "who wants to use a mouse to open links like a chum" - Jon
