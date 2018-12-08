@@ -49,7 +49,11 @@ elif [ ! -z "${TMUX:-}" ]; then
   # reverse order since we prefer newer output over older one.
   file=$(mktemp)
   tmux capture-pane -pS -1000 > "$file"
-  tail -r "$file" | read_all
+  if [ $(type tac &> /dev/null) ]; then
+    tac "$file" | read_all
+  else
+    tail -r "$file" | read_all
+  fi
   rm "$file"
 else
   echo I need some sort of input or for you to run me in tmux!
