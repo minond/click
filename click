@@ -49,7 +49,7 @@ elif [ ! -z "${TMUX:-}" ]; then
   # reverse order since we prefer newer output over older one.
   file=$(mktemp)
   tmux capture-pane -pS -1000 > "$file"
-  if [ $(type tac &> /dev/null) ]; then
+  if hash tac 2> /dev/null; then
     tac "$file" | read_all
   else
     tail -r "$file" | read_all
