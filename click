@@ -1,5 +1,10 @@
 #!/bin/bash
 
+open='open'
+if hash xdg-open 2> /dev/null; then
+  open='xdg-open'
+fi
+
 #=== FUNCTION =================================================================
 #         NAME: open_url
 #  DESCRIPTION: If a URL is found in the argument, open it and exit this program.
@@ -12,7 +17,7 @@ open_url() {
   local url=$(echo "$text" | grep -Eo "$match")
 
   if [ ! -z "$url" ]; then
-    open "$url"
+    $open "$url"
     exit
   fi
 }
