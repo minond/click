@@ -53,7 +53,7 @@ elif [ ! -z "${TMUX:-}" ]; then
   # Capture last N lines from the current tmux pane and read the lines in
   # reverse order since we prefer newer output over older one.
   file=$(mktemp)
-  tmux capture-pane -pS -1000 > "$file"
+  tmux capture-pane -pJS -1000 > "$file"
   if hash tac 2> /dev/null; then
     tac "$file" | read_all
   else
